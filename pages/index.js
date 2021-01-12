@@ -1,23 +1,24 @@
-import Head from 'next/head'
-import Header from '@components/Header'
-import Footer from '@components/Footer'
+import Fetch from "isomorphic-unfetch";
+import Layout from "@components/Layout";
+import Prices from "@components/Prices";
 
-export default function Home() {
-  return (
-    <div className="container">
-      <Head>
-        <title>Next.js Starter!</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <main>
-        <Header title="Welcome to my app!" />
-        <p className="description">
-          Get started by editing <code>pages/index.js</code>
-        </p>
-      </main>
-
-      <Footer />
+const Index = (props) => (
+  <Layout>
+    <div>
+      <h1> Welcome to BitzPrice</h1>
+      <p>Check current Bitcoin rate</p>
+      <Prices bpi={props.bpi} />
     </div>
-  )
-}
+  </Layout>
+);
+
+Index.getInitialProps = async function () {
+  const res = await fetch("https://api.coindesk.com/v1/bpi/currentprice.json");
+  const data = await res.json();
+
+  return {
+    bpi: data.bpi,
+  };
+};
+
+export default Index;
